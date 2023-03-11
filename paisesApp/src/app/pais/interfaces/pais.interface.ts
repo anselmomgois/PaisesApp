@@ -2,127 +2,90 @@
 //
 //   import { Convert } from "./file";
 //
-//   const rESTCountriesResponse = Convert.toRESTCountriesResponse(json);
+//   const paisResponse = Convert.toPaisResponse(json);
 //
 // These functions will throw an error if the JSON doesn't
 // match the expected interface, even if the JSON is valid.
 
 export interface Pais {
-    name:         Name;
-    tld:          string[];
-    cca2:         string;
-    ccn3:         string;
-    cca3:         string;
-    cioc:         string;
-    independent:  boolean;
-    status:       string;
-    unMember:     boolean;
-    currencies:   Currencies;
-    idd:          Idd;
-    capital:      string[];
-    altSpellings: string[];
-    region:       string;
-    subregion:    string;
-    languages:    Languages;
-    translations: { [key: string]: Translation };
-    latlng:       number[];
-    landlocked:   boolean;
-    borders:      string[];
-    area:         number;
-    demonyms:     Demonyms;
-    flag:         string;
-    maps:         Maps;
-    population:   number;
-    gini:         Gini;
-    fifa:         string;
-    car:          Car;
-    timezones:    string[];
-    continents:   string[];
-    flags:        Flags;
-    coatOfArms:   CoatOfArms;
-    startOfWeek:  string;
-    capitalInfo:  CapitalInfo;
-    postalCode:   PostalCode;
+    name:           string;
+    topLevelDomain: string[];
+    alpha2Code:     string;
+    alpha3Code:     string;
+    callingCodes:   string[];
+    capital:        string;
+    altSpellings:   string[];
+    subregion:      string;
+    region:         string;
+    population:     number;
+    latlng:         number[];
+    demonym:        string;
+    area:           number;
+    gini:           number;
+    timezones:      string[];
+    borders:        string[];
+    nativeName:     string;
+    numericCode:    string;
+    flags:          Flags;
+    currencies:     Currency[];
+    languages:      Language[];
+    translations:   Translations;
+    flag:           string;
+    regionalBlocs:  RegionalBloc[];
+    cioc:           string;
+    independent:    boolean;
 }
 
-export interface CapitalInfo {
-    latlng: number[];
-}
-
-export interface Car {
-    signs: string[];
-    side:  string;
-}
-
-export interface CoatOfArms {
-    png: string;
-    svg: string;
-}
-
-export interface Currencies {
-    BRL: Brl;
-}
-
-export interface Brl {
+export interface Currency {
+    code:   string;
     name:   string;
     symbol: string;
 }
 
-export interface Demonyms {
-    eng: Eng;
-    fra: Eng;
-}
-
-export interface Eng {
-    f: string;
-    m: string;
-}
-
 export interface Flags {
-    png: string;
     svg: string;
-    alt: string;
+    png: string;
 }
 
-export interface Gini {
-    "2019": number;
+export interface Language {
+    iso639_1:   string;
+    iso639_2:   string;
+    name:       string;
+    nativeName: string;
 }
 
-export interface Idd {
-    root:     string;
-    suffixes: string[];
+export interface RegionalBloc {
+    acronym:       string;
+    name:          string;
+    otherAcronyms: string[];
+    otherNames:    string[];
 }
 
-export interface Languages {
-    por: string;
+export interface Translations {
+    br: string;
+    pt: string;
+    nl: string;
+    hr: string;
+    fa: string;
+    de: string;
+    es: string;
+    fr: string;
+    ja: string;
+    it: string;
+    hu: string;
 }
 
-export interface Maps {
-    googleMaps:     string;
-    openStreetMaps: string;
+// Converts JSON strings to/from your types
+// and asserts the results of JSON.parse at runtime
+export class Convert {
+    public static toPaisResponse(json: string): Pais[] {
+        return cast(JSON.parse(json), a(r("PaisResponse")));
+    }
+
+    public static paisResponseToJson(value: Pais[]): string {
+        return JSON.stringify(uncast(value, a(r("PaisResponse"))), null, 2);
+    }
 }
-
-export interface Name {
-    common:     string;
-    official:   string;
-    nativeName: NativeName;
-}
-
-export interface NativeName {
-    por: Translation;
-}
-
-export interface Translation {
-    official: string;
-    common:   string;
-}
-
-export interface PostalCode {
-    format: string;
-    regex:  string;
-}
-
-
 
 function invalidValue(typ: any, val: any, key: any, parent: any = ''): never {
     const prettyTyp = prettyTypeName(typ);
@@ -277,102 +240,66 @@ function r(name: string) {
 }
 
 const typeMap: any = {
-    "RESTCountriesResponse": o([
-        { json: "name", js: "name", typ: r("Name") },
-        { json: "tld", js: "tld", typ: a("") },
-        { json: "cca2", js: "cca2", typ: "" },
-        { json: "ccn3", js: "ccn3", typ: "" },
-        { json: "cca3", js: "cca3", typ: "" },
+    "PaisResponse": o([
+        { json: "name", js: "name", typ: "" },
+        { json: "topLevelDomain", js: "topLevelDomain", typ: a("") },
+        { json: "alpha2Code", js: "alpha2Code", typ: "" },
+        { json: "alpha3Code", js: "alpha3Code", typ: "" },
+        { json: "callingCodes", js: "callingCodes", typ: a("") },
+        { json: "capital", js: "capital", typ: "" },
+        { json: "altSpellings", js: "altSpellings", typ: a("") },
+        { json: "subregion", js: "subregion", typ: "" },
+        { json: "region", js: "region", typ: "" },
+        { json: "population", js: "population", typ: 0 },
+        { json: "latlng", js: "latlng", typ: a(0) },
+        { json: "demonym", js: "demonym", typ: "" },
+        { json: "area", js: "area", typ: 0 },
+        { json: "gini", js: "gini", typ: 3.14 },
+        { json: "timezones", js: "timezones", typ: a("") },
+        { json: "borders", js: "borders", typ: a("") },
+        { json: "nativeName", js: "nativeName", typ: "" },
+        { json: "numericCode", js: "numericCode", typ: "" },
+        { json: "flags", js: "flags", typ: r("Flags") },
+        { json: "currencies", js: "currencies", typ: a(r("Currency")) },
+        { json: "languages", js: "languages", typ: a(r("Language")) },
+        { json: "translations", js: "translations", typ: r("Translations") },
+        { json: "flag", js: "flag", typ: "" },
+        { json: "regionalBlocs", js: "regionalBlocs", typ: a(r("RegionalBloc")) },
         { json: "cioc", js: "cioc", typ: "" },
         { json: "independent", js: "independent", typ: true },
-        { json: "status", js: "status", typ: "" },
-        { json: "unMember", js: "unMember", typ: true },
-        { json: "currencies", js: "currencies", typ: r("Currencies") },
-        { json: "idd", js: "idd", typ: r("Idd") },
-        { json: "capital", js: "capital", typ: a("") },
-        { json: "altSpellings", js: "altSpellings", typ: a("") },
-        { json: "region", js: "region", typ: "" },
-        { json: "subregion", js: "subregion", typ: "" },
-        { json: "languages", js: "languages", typ: r("Languages") },
-        { json: "translations", js: "translations", typ: m(r("Translation")) },
-        { json: "latlng", js: "latlng", typ: a(0) },
-        { json: "landlocked", js: "landlocked", typ: true },
-        { json: "borders", js: "borders", typ: a("") },
-        { json: "area", js: "area", typ: 0 },
-        { json: "demonyms", js: "demonyms", typ: r("Demonyms") },
-        { json: "flag", js: "flag", typ: "" },
-        { json: "maps", js: "maps", typ: r("Maps") },
-        { json: "population", js: "population", typ: 0 },
-        { json: "gini", js: "gini", typ: r("Gini") },
-        { json: "fifa", js: "fifa", typ: "" },
-        { json: "car", js: "car", typ: r("Car") },
-        { json: "timezones", js: "timezones", typ: a("") },
-        { json: "continents", js: "continents", typ: a("") },
-        { json: "flags", js: "flags", typ: r("Flags") },
-        { json: "coatOfArms", js: "coatOfArms", typ: r("CoatOfArms") },
-        { json: "startOfWeek", js: "startOfWeek", typ: "" },
-        { json: "capitalInfo", js: "capitalInfo", typ: r("CapitalInfo") },
-        { json: "postalCode", js: "postalCode", typ: r("PostalCode") },
     ], false),
-    "CapitalInfo": o([
-        { json: "latlng", js: "latlng", typ: a(3.14) },
-    ], false),
-    "Car": o([
-        { json: "signs", js: "signs", typ: a("") },
-        { json: "side", js: "side", typ: "" },
-    ], false),
-    "CoatOfArms": o([
-        { json: "png", js: "png", typ: "" },
-        { json: "svg", js: "svg", typ: "" },
-    ], false),
-    "Currencies": o([
-        { json: "BRL", js: "BRL", typ: r("Brl") },
-    ], false),
-    "Brl": o([
+    "Currency": o([
+        { json: "code", js: "code", typ: "" },
         { json: "name", js: "name", typ: "" },
         { json: "symbol", js: "symbol", typ: "" },
     ], false),
-    "Demonyms": o([
-        { json: "eng", js: "eng", typ: r("Eng") },
-        { json: "fra", js: "fra", typ: r("Eng") },
-    ], false),
-    "Eng": o([
-        { json: "f", js: "f", typ: "" },
-        { json: "m", js: "m", typ: "" },
-    ], false),
     "Flags": o([
-        { json: "png", js: "png", typ: "" },
         { json: "svg", js: "svg", typ: "" },
-        { json: "alt", js: "alt", typ: "" },
+        { json: "png", js: "png", typ: "" },
     ], false),
-    "Gini": o([
-        { json: "2019", js: "2019", typ: 3.14 },
+    "Language": o([
+        { json: "iso639_1", js: "iso639_1", typ: "" },
+        { json: "iso639_2", js: "iso639_2", typ: "" },
+        { json: "name", js: "name", typ: "" },
+        { json: "nativeName", js: "nativeName", typ: "" },
     ], false),
-    "Idd": o([
-        { json: "root", js: "root", typ: "" },
-        { json: "suffixes", js: "suffixes", typ: a("") },
+    "RegionalBloc": o([
+        { json: "acronym", js: "acronym", typ: "" },
+        { json: "name", js: "name", typ: "" },
+        { json: "otherAcronyms", js: "otherAcronyms", typ: a("") },
+        { json: "otherNames", js: "otherNames", typ: a("") },
     ], false),
-    "Languages": o([
-        { json: "por", js: "por", typ: "" },
-    ], false),
-    "Maps": o([
-        { json: "googleMaps", js: "googleMaps", typ: "" },
-        { json: "openStreetMaps", js: "openStreetMaps", typ: "" },
-    ], false),
-    "Name": o([
-        { json: "common", js: "common", typ: "" },
-        { json: "official", js: "official", typ: "" },
-        { json: "nativeName", js: "nativeName", typ: r("NativeName") },
-    ], false),
-    "NativeName": o([
-        { json: "por", js: "por", typ: r("Translation") },
-    ], false),
-    "Translation": o([
-        { json: "official", js: "official", typ: "" },
-        { json: "common", js: "common", typ: "" },
-    ], false),
-    "PostalCode": o([
-        { json: "format", js: "format", typ: "" },
-        { json: "regex", js: "regex", typ: "" },
+    "Translations": o([
+        { json: "br", js: "br", typ: "" },
+        { json: "pt", js: "pt", typ: "" },
+        { json: "nl", js: "nl", typ: "" },
+        { json: "hr", js: "hr", typ: "" },
+        { json: "fa", js: "fa", typ: "" },
+        { json: "de", js: "de", typ: "" },
+        { json: "es", js: "es", typ: "" },
+        { json: "fr", js: "fr", typ: "" },
+        { json: "ja", js: "ja", typ: "" },
+        { json: "it", js: "it", typ: "" },
+        { json: "hu", js: "hu", typ: "" },
     ], false),
 };
